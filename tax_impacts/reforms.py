@@ -1323,11 +1323,23 @@ def senate_finance_exemption_reform():
     )
 
 
-def senate_finance_ctc_reform():
+def senate_finance_ctc_ssn_reform():
     """Child Tax Credit reforms from Senate Finance package."""
     return Reform.from_dict(
         {
             "gov.contrib.reconciliation.ctc.in_effect": {"2025-01-01.2100-12-31": True},
+            "gov.contrib.reconciliation.ctc.one_person_ssn_req": {
+                "2025-01-01.2100-12-31": True
+            },
+        },
+        country_id="us",
+    )
+
+
+def senate_finance_ctc_expansion_reform():
+    """Child Tax Credit reforms from Senate Finance package."""
+    return Reform.from_dict(
+        {
             "gov.irs.credits.ctc.amount.base[0].amount": {
                 "2025-01-01.2026-12-31": 2200,
                 "2027-01-01.2028-12-31": 2300,
@@ -1355,9 +1367,6 @@ def senate_finance_ctc_reform():
             "gov.irs.credits.ctc.phase_out.threshold.SEPARATE": {
                 "2026-01-01.2100-12-31": 200000
             },
-            "gov.contrib.reconciliation.ctc.one_person_ssn_req": {
-                "2025-01-01.2100-12-31": True
-            },
             "gov.irs.credits.ctc.refundable.phase_in.threshold": {
                 "2026-01-01.2100-12-31": 2500
             },
@@ -1370,7 +1379,6 @@ def senate_finance_ctc_reform():
         },
         country_id="us",
     )
-
 
 def senate_finance_qbid_reform():
     """Qualified Business Income Deduction reform from Senate Finance package."""
@@ -1450,20 +1458,10 @@ def senate_finance_misc_reform():
         country_id="us",
     )
 
-
-def senate_finance_other_item_reform():
+def senate_finance_charitable_ded_reform():
     """Other itemized deductions reforms from Senate Finance package."""
     return Reform.from_dict(
         {
-            "gov.irs.deductions.itemized.interest.mortgage.cap.JOINT": {
-                "2026-01-01.2100-12-31": 750000
-            },
-            "gov.irs.deductions.itemized.interest.mortgage.cap.SINGLE": {
-                "2026-01-01.2100-12-31": 750000
-            },
-            "gov.irs.deductions.itemized.interest.mortgage.cap.SEPARATE": {
-                "2026-01-01.2100-12-31": 375000
-            },
             "gov.irs.deductions.itemized.charity.non_itemizers_amount.JOINT": {
                 "2026-01-01.2100-12-31": 2000
             },
@@ -1473,20 +1471,11 @@ def senate_finance_other_item_reform():
             "gov.irs.deductions.itemized.charity.non_itemizers_amount.SEPARATE": {
                 "2026-01-01.2100-12-31": 1000
             },
-            "gov.irs.deductions.itemized.interest.mortgage.cap.SURVIVING_SPOUSE": {
-                "2026-01-01.2100-12-31": 750000
-            },
-            "gov.irs.deductions.itemized.interest.mortgage.cap.HEAD_OF_HOUSEHOLD": {
-                "2026-01-01.2100-12-31": 750000
-            },
             "gov.irs.deductions.itemized.charity.non_itemizers_amount.SURVIVING_SPOUSE": {
                 "2026-01-01.2100-12-31": 1000
             },
             "gov.irs.deductions.itemized.charity.non_itemizers_amount.HEAD_OF_HOUSEHOLD": {
                 "2026-01-01.2100-12-31": 1000
-            },
-            "gov.irs.deductions.itemized.casualty.active": {
-                "2026-01-01.2100-12-31": False
             },
             "gov.irs.deductions.itemized.charity.ceiling.all": {
                 "2026-01-01.2100-12-31": 0.6
@@ -1500,6 +1489,26 @@ def senate_finance_other_item_reform():
         },
         country_id="us",
     )
+
+def senate_finance_casualty_loss_reform():
+    """Other itemized deductions reforms from Senate Finance package."""
+    return Reform.from_dict(
+        {
+            "gov.irs.deductions.itemized.casualty.active": {
+                "2026-01-01.2100-12-31": False
+            },
+        },
+        country_id="us",
+    )
+
+def senate_finance_pease_repeal_reform():
+    """PEASE repeal reform from Senate Finance package."""
+    return Reform.from_dict(
+        {"gov.irs.deductions.itemized.reduction.applies": {"2026-01-01.2100-12-31": False}},
+        country_id="us",
+    )
+
+
 
 
 def senate_finance_limitation_on_itemized_deductions_reform():
@@ -1684,11 +1693,14 @@ def get_all_senate_finance_reforms():
         "Tax Rate Reform": senate_finance_tax_rate_reform(),
         "Standard Deduction Reform": senate_finance_sd_reform(),
         "Exemption Reform": senate_finance_exemption_reform(),
-        "CTC Reform": senate_finance_ctc_reform(),
+        "CTC SSN Reform": senate_finance_ctc_ssn_reform(),
+        "CTC Expansion Reform": senate_finance_ctc_expansion_reform(),
         "QBID Reform": senate_finance_qbid_reform(),
         "AMT Reform": senate_finance_amt_reform(),
         "Miscellaneous Reform": senate_finance_misc_reform(),
-        "Other Itemized Deductions Reform": senate_finance_other_item_reform(),
+        "Charitable Deductions Reform": senate_finance_charitable_ded_reform(),
+        "Casualty Loss Reform": senate_finance_casualty_loss_reform(),
+        "PEASE Repeal Reform": senate_finance_pease_repeal_reform(),
         "Limitation on Itemized Deductions Reform": senate_finance_limitation_on_itemized_deductions_reform(),
         "Estate Tax Reform": senate_finance_estate_tax_reform(),
         "Senior Deduction Reform": senate_finance_senior_deduction_reform(),
