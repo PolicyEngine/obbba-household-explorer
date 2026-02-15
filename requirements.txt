@@ -1,6 +1,0 @@
-streamlit
-policyengine-core
-pandas
-numpy
-pyyaml
-setuptools

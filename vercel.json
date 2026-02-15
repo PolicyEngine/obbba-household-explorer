@@ -1,0 +1,9 @@
+{
+  "buildCommand": "mkdir -p frontend/public/data && cp *.csv frontend/public/data/ && cd frontend && npm install && npm run build",
+  "outputDirectory": "frontend/dist",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ],
+  "cleanUrls": true
+}

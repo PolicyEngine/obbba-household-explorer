@@ -2,84 +2,78 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Overview
+## Project overview
 
 This is a **tax policy analysis project** that studies the effects of the "One Big Beautiful Bill Act" (OBBBA) on U.S. households. The project consists of two main components:
 
-1. **Analysis Engine** (`tax_impacts/`): Python scripts that use PolicyEngine-US to calculate household-level tax impacts
-2. **Interactive Dashboard** (`app.py`): Streamlit web application for exploring the analysis results
+1. **Analysis engine** (`tax_impacts/`): Python scripts that use PolicyEngine-US to calculate household-level tax impacts
+2. **Interactive dashboard** (`frontend/`): React + Mantine + Recharts web application for exploring the analysis results
 
 ## Architecture
 
-### Core Components
+### Frontend (React)
 
-- **`tax_impacts/main.py`**: Entry point for running tax impact analysis. Generates both House and Senate versions of the bill impacts
-- **`tax_impacts/analysis.py`**: Core microsimulation analysis using PolicyEngine-US with enhanced CPS 2024 dataset 
-- **`tax_impacts/reforms.py`**: Defines the specific tax reforms being analyzed (not read but referenced)
-- **`app.py`**: Streamlit dashboard with comprehensive household filtering, selection, and visualization
+- **Framework**: Vite + React + TypeScript
+- **UI library**: Mantine v8 (AppShell with sidebar for filters, Cards for results)
+- **Charts**: Recharts (BarChart for waterfall, SegmentedControl for analysis type)
+- **Data loading**: Papa Parse for CSV parsing (files in `frontend/public/data/`)
+- **Testing**: Vitest + React Testing Library
 
-### Data Flow
+### Data flow
 
-1. Analysis scripts generate CSV files: `household_tax_income_changes.csv` (House) and `household_tax_income_changes_senate.csv` (Senate)
-2. Streamlit app loads these CSVs and provides interactive exploration of household impacts
+1. Analysis scripts generate CSV files in the project root (also copied to `frontend/public/data/`)
+2. React app loads CSVs via fetch + Papa Parse
 3. Users can filter households by demographics, income, geography, and view detailed breakdowns
+4. Four CSV variants: House/Senate x Current Law/Current Policy baselines
 
-## Key Dependencies
+### Analysis engine
 
-- **policyengine-us**: Tax policy microsimulation engine
-- **policyengine-core**: Core policy modeling framework
-- **streamlit**: Web dashboard framework  
-- **pandas/numpy**: Data analysis
-- **plotly**: Interactive charting
+- **`tax_impacts/main.py`**: Entry point for running tax impact analysis
+- **`tax_impacts/analysis.py`**: Core microsimulation analysis using PolicyEngine-US
+- **`tax_impacts/reforms.py`**: Defines the specific tax reforms being analyzed
 
-## Common Development Commands
+## Common development commands
 
-### Running Analysis
+### Frontend
+
 ```bash
-# Generate household impact data (takes significant time)
-python tax_impacts/main.py
+cd frontend
+npm install          # Install dependencies
+npm run dev          # Start dev server
+npm run build        # Production build (tsc + vite build)
+npm test             # Run vitest
+npm run test:watch   # Run vitest in watch mode
 ```
 
-### Running Dashboard
+### Analysis
+
 ```bash
-# Start Streamlit dashboard
-streamlit run app.py
+python tax_impacts/main.py   # Generate household impact data (takes significant time)
 ```
 
-### Installing Dependencies
-```bash
-pip install -r requirements.txt
-```
+### Deployment
 
-## Analysis Configuration
+Deployed via Vercel. Config in `vercel.json` at repo root with `outputDirectory: frontend/dist`.
 
-- **Year**: 2026 tax year analysis
-- **Dataset**: Enhanced CPS 2024 from PolicyEngine
-- **Reforms**: Multiple tax code changes including tax rates, deductions, credits, and benefits
-- **Output**: Household-level dollar and percentage changes across different analysis types (Federal Taxes, State Taxes, Net Income, Benefits)
+## Key file locations
 
-## Dashboard Features
+- `frontend/src/App.tsx` - Main application component with state management
+- `frontend/src/types/index.ts` - All TypeScript types, constants, and config
+- `frontend/src/utils/analysis.ts` - Analysis logic (reform impacts, filtering, formatting)
+- `frontend/src/hooks/useData.ts` - CSV data loading hook
+- `frontend/src/components/` - All UI components:
+  - `FilterSidebar.tsx` - Filter controls (weight, income, state, marital, dependents, age)
+  - `HouseholdSelector.tsx` - Random/By ID/Interesting case selection
+  - `WaterfallChart.tsx` - Recharts waterfall showing reform impacts
+  - `BreakdownTable.tsx` - Financial impact summary table
+  - `AnalysisTypeSelector.tsx` - Net Income/Federal Taxes/State Taxes/Benefits toggle
+  - `ConfigSelector.tsx` - Baseline and reform type selection
+  - `HouseholdAttributes.tsx` - Household demographic details
+- `frontend/src/designTokens.ts` - Colors and fonts
+- `frontend/src/__tests__/` - Test files
 
-The Streamlit app provides:
-- **Filtering**: By household weight, income, state, marital status, dependents, age
-- **Selection Methods**: Random sampling, specific household ID, or "interesting cases" (highest/lowest impacts)
-- **Analysis Types**: Federal taxes, state taxes, net income, or benefits focus
-- **Visualizations**: Waterfall charts showing reform component contributions
-- **Detailed Breakdowns**: Component-wise impact analysis for each reform
+## Design tokens
 
-## Code Structure
-
-The application uses a clean object-oriented architecture with dataclasses:
-
-- **Configuration Classes**: `AppConfig`, `UIConfig`, `FilterConfig` for settings
-- **Data Models**: `HouseholdProfile`, `ReformImpact` for structured data
-- **Managers**: `DataManager`, `FilterManager` for specific responsibilities
-- **Analysis Engine**: `TaxAnalysisEngine` handles different analysis types
-- **Rendering**: `VisualizationRenderer` for UI components
-- **Main App**: `HouseholdDashboard` orchestrates the entire application
-
-Key patterns:
-- Extensive use of dataclasses for type safety and structure
-- Clear separation of concerns between data, analysis, and presentation
-- Streamlit caching for performance
-- Comprehensive error handling throughout
+- Primary teal: `#319795`
+- Font: Inter
+- See `frontend/src/designTokens.ts` for full palette
